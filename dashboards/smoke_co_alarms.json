@@ -6,7 +6,8 @@
     "editable": true,
     "gnetId": null,
     "hideControls": false,
-    "id": 2,
+    "id": null,
+    "refresh": "5m",
     "links": [],
     "rows": [
       {
@@ -202,7 +203,7 @@
       "list": []
     },
     "time": {
-      "from": "now-6h",
+      "from": "now-24h",
       "to": "now"
     },
     "timepicker": {

@@ -8,6 +8,7 @@
     "hideControls": false,
     "id": null,
     "links": [],
+    "refresh": "5m",
     "rows": [
       {
         "collapse": false,
@@ -416,7 +417,7 @@
             "thresholds": [],
             "timeFrom": null,
             "timeShift": null,
-            "title": "Panel Title",
+            "title": "Eco Temperatures",
             "tooltip": {
               "msResolution": false,
               "shared": true,
@@ -466,7 +467,7 @@
       "list": []
     },
     "time": {
-      "from": "now-6h",
+      "from": "now-24h",
       "to": "now"
     },
     "timepicker": {
