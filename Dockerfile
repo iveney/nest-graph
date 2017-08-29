@@ -29,7 +29,7 @@ ADD grafana.sh /opt/
 ADD dashboards /opt/dashboards
 
 # Install tCollector
-ADD https://github.com/OpenTSDB/tcollector/archive/v1.3.2.tar.gz /opt/
+RUN wget https://github.com/OpenTSDB/tcollector/archive/v1.3.2.tar.gz && tar xzf v1.3.2.tar.gz && rm v1.3.2.tar.gz
 ADD home_collectors /opt/home_collectors
 
 RUN pip install python-nest

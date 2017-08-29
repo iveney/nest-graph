@@ -3,7 +3,7 @@
 echo "Starting Grafana"
 service grafana-server start
 
-sleep 20
+sleep 60
 
 # add opentsdb datasource 
 if [ ! -f /opt/datasource_created.txt ]; then
