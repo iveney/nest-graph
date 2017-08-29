@@ -11,8 +11,8 @@ RUN apt-get update && \
 RUN mkdir -p  /var/run/sshd /var/log/supervisor /data/hbase /data/zookeeper
 
 # Install HBase
-ADD http://archive.apache.org/dist/hbase/hbase-1.1.0/hbase-1.1.0-bin.tar.gz /opt/
 WORKDIR /opt
+RUN wget http://archive.apache.org/dist/hbase/hbase-1.1.0/hbase-1.1.0-bin.tar.gz && tar xzf hbase-1.1.0-bin.tar.gz && rm hbase-*.gz
 
 ADD hbase-site.xml /opt/hbase-1.1.0/conf/
 RUN echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/" >> /opt/hbase-1.1.0/conf/hbase-env.sh
