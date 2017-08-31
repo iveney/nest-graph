@@ -1,9 +1,9 @@
-# OpenTSDB Server
+# Nest Data Collector
 #
 # VERSION               0.0.1
 
 FROM      ubuntu
-MAINTAINER Binbin Zhao <bizhao@vmware.com>
+LABEL maintainer="Peter Ottery"
 
 RUN apt-get update && \
     apt-get install -y openjdk-8-jdk gnuplot openssh-server supervisor adduser libfontconfig curl && \
