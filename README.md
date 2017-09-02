@@ -1,8 +1,8 @@
 # Nest Metrics Collector
 
-This project is a slightly over engineered solution for collecting metrics from Nest devices (i.e. temperature, humidity, alarm state etc.) such that they can be visualised in a customisable way.
+This project is a slightly over engineered solution for collecting metrics from [Nest](https://nest.com) devices (i.e. temperature, humidity, alarm state etc.) such that they can be visualised in a customisable way.
 
-The stack relies on OpenTSDB for the metrics storage and Grafana for the visualisation. The metrics collection is provided by a custom Python collector which runs within the OpenTSDB tCollector service.
+The stack relies on [OpenTSDB](http://opentsdb.net) for the metrics storage and [Grafana](https://grafana.com/grafana) for the visualisation. The metrics collection is provided by a custom Python collector which runs within the [OpenTSDB tCollector](http://opentsdb.net/docs/build/html/user_guide/utilities/tcollector.html) service.
 
 Everything is packaged in a self-contained Docker container allowing it to be deployed anywhere. 
 
@@ -12,13 +12,13 @@ Everything is packaged in a self-contained Docker container allowing it to be de
 2. Set up a Nest developer account to allow API access to the devices in your account
 3. Pull and run the Docker container.
 4. Run a config script on the Docker container to provide Nest API credentials.
-5. Visit the Grafana web console and start playing with all the graphs.
+5. Visit the [Grafana web console](localhost:3000) and start playing with all the graphs.
 
 ## Install Docker
 
-Follow the platform specific install instructions.
+Follow the [platform specific install instructions](https://docs.docker.com/engine/installation/).
 
-# Nest Developer Account
+## Nest Developer Account
 
 You will need a Nest developer account, and a Product on the Nest developer portal:
 
@@ -55,7 +55,7 @@ First pull the docker image:
 ```commandline
 docker pull peterot/nest-graph
 ```
-Start the container running with the ports for Grafana (3000) and OpenTSDB (4242) mapped to localhost:
+Start the container running with the ports for [Grafana](https://grafana.com/grafana) (3000) and [OpenTSDB](http://opentsdb.net) (4242) mapped to localhost:
 
 ```commandline
 docker run -d -p 4242:4242 -p 3000:3000 --restart unless-stopped peterot/nest-graph
@@ -72,21 +72,31 @@ docker exec -it [CONTAINER-ID] /usr/bin/python /opt/nest-auth.py
 
 ## Grafana
 
-Grafana will already have been configured with the OpenTSDB datasource and two example dashboards.
+[Grafana](https://grafana.com/grafana) will already have been configured with the [OpenTSDB](http://opentsdb.net) datasource and two example dashboards.
 
 * Thermostats Overview - graphs showing all metrics from all the associated Nest thermostats.
 * Smoke/CO Alarms - graphs showing the alarm state for all the associated Nest smoke/co alarms
 
-You can access Grafana at localhost:3000 with default credentials `admin:admin`.
+You can access [Grafana](https://grafana.com/grafana) at <localhost:3000> with default credentials `admin:admin`.
+
+## OpenTSDB
+
+If you wish to play with OpenTSDB directly you can access the web console on <localhost:4242>
 
 ## Stored Metrics
 
-* `nest.num_thermostats`
+* `nest.away`
+* `nest.num_thermostats` - away state; 'home': 1, 'away': 0, 'unknown': -1
 * `nest.thermostat.temperature`
 * `nest.thermostat.humidity`
 * `nest.thermostat.target` - target temperature
 * `nest.thermostat.eco.temperature.low`
 * `nest.thermostat.eco.temperature.high`
 * `nest.thermostat.hvac_state` - heating state; 'heating': 1, 'off': 0, 'cooling': -1
+* `nest.thermostat.is_online` - online state; 'online': 1, 'offline': 0
 * `nest.smoke_co_alarm.co_status` - 'ok': 0, 'warning': 1, 'emergency': 2
 * `nest.smoke_co_alarm.smoke_status` - 'ok': 0, 'warning': 1, 'emergency': 2
+
+# Acknowledgements
+
+In addition to [Grafana](https://grafana.com/grafana) and [OpenTSDB](http://opentsdb.net) this project relies on the excellent Python client for accessing the Nest API [python-nest](https://github.com/jkoelker/python-nest).
