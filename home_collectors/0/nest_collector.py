@@ -32,7 +32,12 @@ def collect_all_devices(napi):
     for structure in napi.structures:
         ts = time.time()
         tags = {"structure":structure.name}
-        printmetric("away", ts, structure.away, tags)
+        away_val = {
+            'home': 1,
+            'away': 0,
+            'unknown': -1,
+        }[structure.away]
+        printmetric("away", ts, away_val, tags)
         printmetric("num_thermostats", ts, structure.num_thermostats, tags)
 
         for device in structure.thermostats:
@@ -44,8 +49,11 @@ def collect_all_devices(napi):
             printmetric(metric_prefix + "eco.temperature.low", ts, device.eco_temperature.low, tags)
             printmetric(metric_prefix + "eco.temperature.high", ts, device.eco_temperature.high, tags)
 
-            is_online = device.online == "True"
-            printmetric(metric_prefix + "is_online", ts, is_online, tags)
+            online_val = {
+                True: 1,
+                False: 0
+            }[device.online]
+            printmetric(metric_prefix + "is_online", ts, online_val, tags)
 
             hvac_state_val = {
                 'heating': 1,
