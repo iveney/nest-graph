@@ -6,6 +6,8 @@ The stack relies on [OpenTSDB](http://opentsdb.net) for the metrics storage and 
 
 Everything is packaged in a self-contained Docker container allowing it to be deployed anywhere. 
 
+![Grafana dashboard screen shot](https://github.com/peterot/nest-graph/blob/master/images/ScreenShot.png?raw=true "Screen Shot")
+
 # Deployment Steps
 
 1. Install Docker.
