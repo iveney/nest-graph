@@ -1,3 +1,7 @@
+UPDATED DOCKERFILE PENDING...PLEASE STANDBY (2018-10-21)
+
+Based on peterot's work (peterot/nest-graph). Updated with the latest versions of all components as of October 2018. 
+
 # Nest Metrics Collector
 
 This project is a slightly over engineered solution for collecting metrics from [Nest](https://nest.com) devices (i.e. temperature, humidity, alarm state etc.) such that they can be visualised in a customisable way.
