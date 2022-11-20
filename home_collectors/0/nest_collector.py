@@ -9,11 +9,11 @@ import os.path
 #from home_collectors.lib import utils
 
 ROOT_METRIC = "nest"
-CONFIG_FILE = '/opt/nest-config.json'
+CONFIG_FILE = '/data/nest-config.json'
 
 def get_config():
     if os.path.isfile(CONFIG_FILE):
-        with open('/opt/nest-config.json') as json_data:
+        with open('/data/nest-config.json') as json_data:
             nest_conf = json.load(json_data)
 
             config = {
@@ -107,7 +107,7 @@ def main():
         client_id = config['client_id']
         project_id = config['project_id']
         client_secret = config['client_secret']
-        access_token_cache_file = '/opt/nest.json'
+        access_token_cache_file = '/data/nest.json'
 
         napi = nest.Nest(client_id=client_id, project_id=project_id, client_secret=client_secret, access_token_cache_file=access_token_cache_file)
 

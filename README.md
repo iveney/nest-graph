@@ -33,10 +33,16 @@ First build the docker image:
 ```commandline
 docker build . -t nest-graph
 ```
+
+Make a folder on the host machine to store data and auth access credentials
+```
+mkdir -p /opt/nestdata
+```
+
 Start the container running with the ports for [Grafana](https://grafana.com/grafana) (3000) and [OpenTSDB](http://opentsdb.net) (4242) mapped to localhost:
 
 ```commandline
-docker run -d -p 4242:4242 -p 3000:3000 --restart unless-stopped nest-graph
+docker run -d -p 4242:4242 -p 3000:3000 --restart unless-stopped -v /opt/nestdata:/data nest-graph
 ```
 The previous command will return the container id as a long string. Copy this for use in the next step.
 

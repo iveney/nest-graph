@@ -7,7 +7,7 @@ print ("Nest Authenticator")
 project_id = input("Project ID: ")
 client_id = input("Client ID: ")
 client_secret = input("Client Secret: ")
-access_token_cache_file = '/opt/nest.json'
+access_token_cache_file = '/data/nest.json'
 
 def reauthorize_callback(url):
     print("Go here and follow the instructions")
@@ -19,5 +19,5 @@ with nest.Nest(client_id=client_id, client_secret=client_secret, project_id=proj
     # Will trigger initial auth and fetch of data
     devices = napi.get_devices()
     print(devices)
-    with open('/opt/nest-config.json', 'w') as fp:
+    with open('/data/nest-config.json', 'w') as fp:
         json.dump({'project_id': project_id, 'client_id':client_id, 'client_secret':client_secret, 'access_token_cache_file':access_token_cache_file}, fp)

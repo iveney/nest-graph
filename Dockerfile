@@ -3,7 +3,7 @@
 # VERSION               2.2.1
 #
 # RUN THE CONTAINER WITH THE FOLLOWING COMMAND
-# docker run -d -p 4242:4242 -p 3000:3000 --restart unless-stopped jeff89179/nest-graph-v2.2
+# docker run -d -p 4242:4242 -p 3000:3000 -v /opt/nestdata:/data --restart unless-stopped jeff89179/nest-graph-v2.2
 #
 # TAG THE IMAGE WITH THE FOLLOWING COMMAND
 # docker tag [image id] jeff89179/nest-graph-v2.2
