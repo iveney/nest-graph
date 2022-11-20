@@ -52,7 +52,8 @@ def collect_all_devices(napi):
         printmetric("away", ts, -1, tags)
 
         if device.type == 'THERMOSTAT':
-            tags = {"structure":device.where, "device":device.name}
+            shortname = device.name[-7:-1]
+            tags = {"structure":device.where, "device": "%s-%s" %(device.where, shortname)}
             metric_prefix = "thermostat."
             traits = device.traits
             printmetric(metric_prefix + "temperature", ts, temperatureUnits(traits, traits['Temperature']['ambientTemperatureCelsius']), tags)
