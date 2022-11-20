@@ -20,6 +20,7 @@ def get_config():
                 'collection_interval': 60,   # Seconds, how often to collect metric data
                 'collection_filter': '.*',    # Filter to choose disks, .* will take all disks
                 'client_id': nest_conf['client_id'],
+                'project_id': nest_conf['project_id'],
                 'client_secret': nest_conf['client_secret'],
                 'access_token_cache_file': nest_conf['access_token_cache_file']
             }
@@ -29,56 +30,60 @@ def get_config():
         return None
 
 def collect_all_devices(napi):
-    for structure in napi.structures:
+    devices = napi.get_devices()
+    printmetric("num_thermostats", time.time(), len(devices), {})
+    for device in devices:
         ts = time.time()
-        tags = {"structure":structure.name}
-        away_val = {
-            'home': 1,
-            'away': 0,
-            'unknown': -1,
-        }[structure.away]
-        printmetric("away", ts, away_val, tags)
-        printmetric("num_thermostats", ts, structure.num_thermostats, tags)
+        tags = {"device":device.name}
 
-        for device in structure.thermostats:
-            tags = {"structure":structure.name, "device":device.name}
+        # Seems new google API doesn't give us structure info
+        # away_val = {
+        #     'home': 1,
+        #     'away': 0,
+        #     'unknown': -1,
+        # }[structure.away]
+        printmetric("away", ts, -1, tags)
+
+        if device.type == 'THERMOSTAT':
+            tags = {"structure":device.where, "device":device.name}
             metric_prefix = "thermostat."
-            printmetric(metric_prefix + "temperature", ts, device.temperature, tags)
-            printmetric(metric_prefix + "humidity", ts, device.humidity, tags)
-            printmetric(metric_prefix + "target", ts, device.target, tags)
-            printmetric(metric_prefix + "eco.temperature.low", ts, device.eco_temperature.low, tags)
-            printmetric(metric_prefix + "eco.temperature.high", ts, device.eco_temperature.high, tags)
+            traits = device.traits
+            printmetric(metric_prefix + "temperature", ts, traits['Temperature']['ambientTemperatureCelsius'], tags)
+            printmetric(metric_prefix + "humidity", ts, device.traits['Humidity']['ambientHumidityPercent'], tags)
+            printmetric(metric_prefix + "target", ts, list(device.traits['ThermostatTemperatureSetpoint'].values())[0], tags)
+            printmetric(metric_prefix + "eco.temperature.low", ts, device.traits['ThermostatEco']['heatCelsius'], tags)
+            printmetric(metric_prefix + "eco.temperature.high", ts, device.traits['ThermostatEco']['coolCelsius'], tags)
 
             online_val = {
                 True: 1,
                 False: 0
-            }[device.online]
+            }[traits['Connectivity']['status'] == "ONLINE"]
             printmetric(metric_prefix + "is_online", ts, online_val, tags)
 
             hvac_state_val = {
-                'heating': 1,
-                'off': 0,
-                'cooling': -1,
-            }[device.hvac_state]
+                'HEATING': 1,
+                'OFF': 0,
+                'COOLING': -1,
+            }[traits['ThermostatHvac']['status']]
             printmetric(metric_prefix + "hvac_state", ts, hvac_state_val, tags)
 
-        for device in structure.smoke_co_alarms:
-            tags = {"structure":structure.name, "device":device.name}
-            metric_prefix = "smoke_co_alarm."
+        # for device in structure.smoke_co_alarms:
+        #     tags = {"structure":structure.name, "device":device.name}
+        #     metric_prefix = "smoke_co_alarm."
 
-            status_map = {
-                'ok': 0,
-                'warning': 1,
-                'emergency': 2
-            }
-            printmetric(metric_prefix + "co_status", ts, status_map[device.co_status], tags)
-            printmetric(metric_prefix + "smoke_status", ts, status_map[device.smoke_status], tags)
+        #     status_map = {
+        #         'ok': 0,
+        #         'warning': 1,
+        #         'emergency': 2
+        #     }
+        #     printmetric(metric_prefix + "co_status", ts, status_map[device.co_status], tags)
+        #     printmetric(metric_prefix + "smoke_status", ts, status_map[device.smoke_status], tags)
 
 def printmetric(metric, ts, value, tags):
   # Warning, this should be called inside a lock
   if tags:
     tags = " " + " ".join("%s=%s" % (tidy_string(name), tidy_string(value))
-                          for name, value in tags.iteritems())
+                          for name, value in tags.items())
   else:
     tags = ""
   print ("%s %d %s %s"
@@ -92,19 +97,18 @@ def main():
     if config != None:
         collection_interval = config['collection_interval']
         client_id = config['client_id']
+        project_id = config['project_id']
         client_secret = config['client_secret']
         access_token_cache_file = '/opt/nest.json'
 
-        napi = nest.Nest(client_id=client_id, client_secret=client_secret, access_token_cache_file=access_token_cache_file)
+        napi = nest.Nest(client_id=client_id, project_id=project_id, client_secret=client_secret, access_token_cache_file=access_token_cache_file)
 
-        if napi.authorization_required:
-            #utils.err("Nest Authorization Required")
-            print ('Nest Authorization Required')
 
         collect_all_devices(napi)
 
         time.sleep(collection_interval)
     else:
+        print("Unable to find nest api auth config, looping...")
         time.sleep(60)
 
 if __name__ == "__main__":
