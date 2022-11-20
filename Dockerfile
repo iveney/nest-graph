@@ -9,7 +9,7 @@
 # docker tag [image id] jeff89179/nest-graph-v2.2
 #
 # CONFIGURE THE LOGIN WITH THE FOLLOWING COMMAND
-# docker exec -it [container id] /usr/bin/python /opt/nest-auth.py
+# docker exec -it [container id] /usr/bin/python3 /opt/nest-auth.py
 
 FROM      ubuntu
 LABEL maintainer="jeff89179"

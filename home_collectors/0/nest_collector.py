@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import sys
 import time
@@ -29,6 +29,13 @@ def get_config():
     else:
         return None
 
+def temperatureUnits(traits, value):
+    # by default everything from google is celcius,
+    if traits['Settings']['temperatureScale'] == 'CELSIUS':
+        return value
+
+    return round((value * 1.8) + 32)
+
 def collect_all_devices(napi):
     devices = napi.get_devices()
     printmetric("num_thermostats", time.time(), len(devices), {})
@@ -48,11 +55,11 @@ def collect_all_devices(napi):
             tags = {"structure":device.where, "device":device.name}
             metric_prefix = "thermostat."
             traits = device.traits
-            printmetric(metric_prefix + "temperature", ts, traits['Temperature']['ambientTemperatureCelsius'], tags)
+            printmetric(metric_prefix + "temperature", ts, temperatureUnits(traits, traits['Temperature']['ambientTemperatureCelsius']), tags)
             printmetric(metric_prefix + "humidity", ts, device.traits['Humidity']['ambientHumidityPercent'], tags)
-            printmetric(metric_prefix + "target", ts, list(device.traits['ThermostatTemperatureSetpoint'].values())[0], tags)
-            printmetric(metric_prefix + "eco.temperature.low", ts, device.traits['ThermostatEco']['heatCelsius'], tags)
-            printmetric(metric_prefix + "eco.temperature.high", ts, device.traits['ThermostatEco']['coolCelsius'], tags)
+            printmetric(metric_prefix + "target", ts, temperatureUnits(traits, list(device.traits['ThermostatTemperatureSetpoint'].values())[0]), tags)
+            printmetric(metric_prefix + "eco.temperature.low", ts, temperatureUnits(traits, device.traits['ThermostatEco']['heatCelsius']), tags)
+            printmetric(metric_prefix + "eco.temperature.high", ts, temperatureUnits(traits, device.traits['ThermostatEco']['coolCelsius']), tags)
 
             online_val = {
                 True: 1,
