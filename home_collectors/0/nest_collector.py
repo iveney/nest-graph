@@ -13,7 +13,7 @@ CONFIG_FILE = '/data/nest-config.json'
 
 def get_config():
     if os.path.isfile(CONFIG_FILE):
-        with open('/data/nest-config.json') as json_data:
+        with open(CONFIG_FILE) as json_data:
             nest_conf = json.load(json_data)
 
             config = {
