@@ -1,6 +1,8 @@
-UPDATED DOCKERFILE PENDING...PLEASE STANDBY (2018-10-21)
 
-Based on peterot's work (peterot/nest-graph). Updated with the latest versions of all components as of October 2018. 
+Based on jeff89179's work, which is based on peterot's work (peterot/nest-graph). Updated for the new Google version of the nest device APIs.
+
+Based on Axlan's updated python-next which uses said Google APIs. Pleaes read the README there https://github.com/axlan/python-nest to learn how to
+authenticate with the API, it's nuanced and requires following the instructions carefully.
 
 # Nest Metrics Collector
 
@@ -8,63 +10,33 @@ This project is a slightly over engineered solution for collecting metrics from 
 
 The stack relies on [OpenTSDB](http://opentsdb.net) for the metrics storage and [Grafana](https://grafana.com/grafana) for the visualisation. The metrics collection is provided by a custom Python collector which runs within the [OpenTSDB tCollector](http://opentsdb.net/docs/build/html/user_guide/utilities/tcollector.html) service.
 
-Everything is packaged in a self-contained Docker container allowing it to be deployed anywhere. 
+Everything is packaged in a self-contained Docker container allowing it to be deployed anywhere.
 
 ![Grafana dashboard screen shot](https://github.com/peterot/nest-graph/blob/master/images/ScreenShot.png?raw=true "Screen Shot")
 
 # Deployment Steps
 
 1. Install Docker.
-2. Set up a Nest developer account to allow API access to the devices in your account
+2. Follow the [readme steps](https://github.com/axlan/python-nest) at axlan/python-nest to generate a project_id, client_id and client_secret
 3. Pull and run the Docker container.
-4. Run a config script on the Docker container to provide Nest API credentials.
-5. Visit the [Grafana web console](localhost:3000) and start playing with all the graphs.
+4. Run a config script on the Docker container to provide three credentials.
+5. Visit the [Grafana web console](localhost:3000) and start playing with all the graphs. (data takes 1-2 minutes to start)
 
 ## Install Docker
 
 Follow the [platform specific install instructions](https://docs.docker.com/engine/installation/).
 
-## Nest Developer Account
+## Docker Deployment
 
-You will need a Nest developer account, and a Product on the Nest developer portal:
-
-1. Visit `Nest Developers <https://developers.nest.com/>`_, and sign in. Create an account if you don't have one already.
-
-2. Fill in the account details:
-
-  - The "Company Information" can be anything.
-
-3. Submit changes.
-
-4. Click "`Products <https://developers.nest.com/products>`_" at top of page.
-
-5. Click "`Create New Product <https://developers.nest.com/products/new>`_"
-
-6. Fill in details:
-
-  - Product name must be unique.
-
-  - The description, users, urls can all be anything you want.
-
-7. For permissions, check every box it should only be necessary to request read access.
-
-  - The description requires a specific format to be accepted.
-
-8. Click "Create Product".
-
-9. Once the new product page opens the "Product ID" and "Product Secret" are located on the right side. These will be used as client_id and client_secret below.
-
-## Docker Deployment 
-
-First pull the docker image:
+First build the docker image:
 
 ```commandline
-docker pull peterot/nest-graph
+docker build . -t nest-graph
 ```
 Start the container running with the ports for [Grafana](https://grafana.com/grafana) (3000) and [OpenTSDB](http://opentsdb.net) (4242) mapped to localhost:
 
 ```commandline
-docker run -d -p 4242:4242 -p 3000:3000 --restart unless-stopped peterot/nest-graph
+docker run -d -p 4242:4242 -p 3000:3000 --restart unless-stopped nest-graph
 ```
 The previous command will return the container id as a long string. Copy this for use in the next step.
 
@@ -73,7 +45,7 @@ The previous command will return the container id as a long string. Copy this fo
 It is necessary to execute a small python script on the docker container to setup the Nest API credentials. The stript will ask for the id and secret obtained when the developer account was set up. It will then output a URL which you must visit to inform Nest that you are happy to allow the metrics collector the specified access. Once accepted it will give you a pin which must be provided to the config script.
 
 ```commandline
-docker exec -it [CONTAINER-ID] /usr/bin/python /opt/nest-auth.py
+docker exec -it [CONTAINER-ID] /usr/bin/python3 /opt/nest-auth.py
 ```
 
 ## Grafana
@@ -105,4 +77,4 @@ If you wish to play with OpenTSDB directly you can access the web console on <lo
 
 # Acknowledgements
 
-In addition to [Grafana](https://grafana.com/grafana) and [OpenTSDB](http://opentsdb.net) this project relies on the excellent Python client for accessing the Nest API [python-nest](https://github.com/jkoelker/python-nest).
+In addition to [Grafana](https://grafana.com/grafana) and [OpenTSDB](http://opentsdb.net) this project relies on the excellent Python client for accessing the Nest API [python-google-nest](https://github.com/axlan/python-nest).
