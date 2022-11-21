@@ -3,9 +3,9 @@
 echo "Starting Grafana"
 service grafana-server start
 
-sleep 60
+sleep 10
 
-# add opentsdb datasource 
+# add opentsdb datasource
 if [ ! -f /opt/datasource_created.txt ]; then
   echo "Creating opentsdb datasource in Grafana."
   curl 'http://admin:admin@127.0.0.1:3000/api/datasources' -X POST -H 'Content-Type: application/json;charset=UTF-8' --data-binary '{"name":"localOpenTSDB","type":"opentsdb","url":"http://127.0.0.1:4242","access":"proxy","isDefault":true}'

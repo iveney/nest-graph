@@ -1,22 +1,12 @@
 {
   "dashboard": {
     "annotations": {
-      "list": [
-        {
-          "builtIn": 1,
-          "datasource": "-- Grafana --",
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations & Alerts",
-          "type": "dashboard"
-        }
-      ]
+      "list": []
     },
     "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
-    "id": 1,
+    "id": null,
     "links": [],
     "panels": [
       {
@@ -617,7 +607,6 @@
     },
     "timezone": "browser",
     "title": "Thermostats Overview",
-    "uid": "sXT9s2d4z",
     "version": 2
   },
   "overwrite": true
