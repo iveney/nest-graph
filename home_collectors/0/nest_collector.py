@@ -66,7 +66,10 @@ def collect_all_devices(napi):
             traits = device.traits
             printmetric(metric_prefix + "temperature", ts, temperatureUnits(traits, traits['Temperature']['ambientTemperatureCelsius']), tags)
             printmetric(metric_prefix + "humidity", ts, device.traits['Humidity']['ambientHumidityPercent'], tags)
-            printmetric(metric_prefix + "target", ts, temperatureUnits(traits, list(device.traits['ThermostatTemperatureSetpoint'].values())[0]), tags)
+            try:
+                printmetric(metric_prefix + "target", ts, temperatureUnits(traits, list(device.traits['ThermostatTemperatureSetpoint'].values())[0]), tags)
+            except IndexError:
+                pass
             printmetric(metric_prefix + "eco.temperature.low", ts, temperatureUnits(traits, device.traits['ThermostatEco']['heatCelsius']), tags)
             printmetric(metric_prefix + "eco.temperature.high", ts, temperatureUnits(traits, device.traits['ThermostatEco']['coolCelsius']), tags)
 
