@@ -5,7 +5,7 @@ import time
 import nest
 import json
 import os.path
-
+import urllib.request
 #from home_collectors.lib import utils
 
 ROOT_METRIC = "nest"
@@ -39,6 +39,14 @@ def temperatureUnits(traits, value):
 def collect_all_devices(napi):
     devices = napi.get_devices()
     printmetric("num_thermostats", time.time(), len(devices), {})
+    wxFd = urllib.request.urlopen('https://api.weather.gov/stations/KSMO/observations')
+    try:
+        wxJson = json.loads(wxFd.read().decode('utf-8'))
+        temp = wxJson['features'][0]['properties']['temperature']['value']
+        printmetric("outdoor_temperature", time.time(), round((temp * 1.8) + 32), {})
+    except Exception as err:
+        print(err)
+
     for device in devices:
         ts = time.time()
         tags = {"device":device.name}
