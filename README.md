@@ -1,3 +1,8 @@
+This is testd on Raspberry Pi 4 4GB with 32bit OS.
+
+Based on ZachGoldberg/nest-graph, fixed Dockerfile/tCollector to explicitly use python2. Also change arch to armv7. 
+
+# History
 
 Based on jeff89179's work, which is based on peterot's work (peterot/nest-graph). Updated for the new Google version of the nest device APIs.
 
